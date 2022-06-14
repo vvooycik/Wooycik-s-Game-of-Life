@@ -1,6 +1,5 @@
 const board = document.querySelector(".board");
-console.log(board.offsetHeight, board.offsetWidth);
-console.log(board.clientHeight/14, board.clientWidth/14);
+console.log(board.clientHeight, board.clientWidth);
 const SIZE_X = Math.floor(board.clientWidth/20);
 const SIZE_Y = Math.floor(board.clientHeight/20);
 console.log(SIZE_Y, SIZE_X);
