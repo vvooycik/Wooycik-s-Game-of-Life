@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400&display=swap');
+
+html, body {
+    height: 100%;
+    font-family: 'Work Sans', sans-serif;
+}
+
+.title {
+    text-align: center;
+}
+
+.container {
+    height: 92%;
+    display: flex;
+    justify-items: center;
+}
+
+.container div {
+    margin: 1rem;
+}
+
+.board {
+    width: 80%;
+    background-color: rgb(242, 242, 242);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    padding: 0;
+}
+
+.settingsPane {
+    width: 20%;
+    background-color: rgb(163, 197, 251);
+    display: flex;
+    align-items: center;
+}
+
+h3 {
+    margin:3rem;
+}
+
+.container div .checkbox {
+    margin: 1px;
+    width: 14px;
+    height: 14px;
+    border: solid 2px lightgray;
+}
+
+.checked {
+    background-color: rgb(37, 120, 255);
+}
