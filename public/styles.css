@@ -3,51 +3,61 @@
 html, body {
     height: 100%;
     font-family: 'Work Sans', sans-serif;
+    background-color: rgb(206, 161, 0);
 }
 
 .title {
     text-align: center;
+    width:70%;
 }
 
 .container {
-    height: 92%;
+    height: 98%;
     display: flex;
     justify-items: center;
 }
 
-.container div {
+.boardContainer {
     margin: 1rem;
+    width: 80%;
+    padding:1rem;
+    background-color: rgb(202, 202, 202);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.19);
 }
 
 .board {
-    width: 80%;
-    background-color: rgb(242, 242, 242);
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
-    padding: 0;
 }
 
 .settingsPane {
+    margin:1rem;
     width: 20%;
-    background-color: rgb(163, 197, 251);
+    background-color: rgb(202, 202, 202);
     display: flex;
+    flex-direction: column;
     align-items: center;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.19);
 }
 
 h3 {
     margin:3rem;
 }
 
-.container div .checkbox {
+.checkbox {
     margin: 1px;
     width: 14px;
     height: 14px;
-    border: solid 2px lightgray;
+    border: solid 2px rgb(178, 178, 178);;
 }
 
 .checked {
-    background-color: rgb(37, 120, 255);
+    background-color: rgb(72, 72, 72);
 }
 
 @media only screen and (max-width: 600px) {
@@ -56,29 +66,27 @@ h3 {
         align-items: center;
     }
 
-    .board {
+    .boardContainer {
+        margin: 0.5rem;
         height: 80%;
-        width: 100%;
-        background-color: rgb(242, 242, 242);
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-evenly;
-        padding: 0;
+        width: 90%;
     }
 
     .settingsPane {
+        margin: 0.5rem;
         height: 20%;
         width: 100%;
-        background-color: rgb(163, 197, 251);
-        display: flex;
-        align-items: center;
     }
 
-    .container div {
-        margin: 0.5rem;
+    .title {
+        width:100%;
+    }
+
+    h1 {
+        font-size: x-large;
     }
 
     h3 {
-        margin: 1rem;
+        margin: 0.5rem;
     }
 }
