@@ -33,6 +33,7 @@ for (let y=0; y<SIZE_Y; y++) {
         });
         element.addEventListener("pointerup", (e) => {
             isDrawing = false;
+            isStaringDrawing = false;
         });
         element.addEventListener("mouseleave", (e) => {
             if (isStaringDrawing) {
