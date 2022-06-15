@@ -1,14 +1,22 @@
+const SIZE_X = Math.floor(board.clientWidth/20);
+const SIZE_Y = Math.floor(board.clientHeight/20);
+const boardState = Array.from({ length: SIZE_Y }, () => Array.from({ length: SIZE_X }, () => undefined));
+const rules = { 
+    alive: Array.from({length: 10}, () => false),
+    dead: Array.from({length: 10}, () => false)
+};
+let currentState = Array.from({ length: SIZE_Y }, () => Array.from({ length: SIZE_X }, () => false));
+let SPEED = 300;
+
+
 registerBoard();
 registerRulesBox();
 
 
 function registerBoard() {
     const board = document.querySelector("#board");
-    const SIZE_X = Math.floor(board.clientWidth/20);
-    const SIZE_Y = Math.floor(board.clientHeight/20);
     let isDrawing = false;
     let isStaringDrawing = false;
-    let boardState = Array.from({ length: SIZE_Y }, () => Array.from({ length: SIZE_X }, () => false));
 
 
     for (let y=0; y<SIZE_Y; y++) {
@@ -18,10 +26,12 @@ function registerBoard() {
             element.id = `[${y}, ${x}]`
 
             board.appendChild(element);
+            boardState[y][x] = element;
 
             element.addEventListener("click", () => {
                 let isChecked = element.classList.contains('checked');
-                boardState[y][x] = !isChecked;
+                boardState[y][x] = element;
+                currentState[y][x] = !isChecked;
                 if (isChecked) {
                     element.classList.remove("checked");
                 } else {
@@ -41,13 +51,13 @@ function registerBoard() {
                 if (isStaringDrawing) {
                     element.classList.add('checked');
                     isStaringDrawing = false;
-                    boardState[y][x] = isStaringDrawing;
+                    currentState[y][x] = isStaringDrawing;
                 }
             });
             element.addEventListener("mouseenter", (e) => {
                 if (isDrawing) {
                     element.classList.add('checked');
-                    boardState[y][x] = isDrawing;
+                    currentState[y][x] = isDrawing;
                 }
             });
         }
@@ -56,10 +66,6 @@ function registerBoard() {
 
 function registerRulesBox() {
     const rulesBox = document.querySelector('#rulesBox');
-    const rules = { 
-        alive: new Array(10).fill(0), 
-        dead: new Array(10).fill(0)
-    };
     const aliveRow = document.createElement("div");
     aliveRow.setAttribute("id", "alive");
     aliveRow.style = "display: flex; align-items:center";
@@ -68,19 +74,20 @@ function registerRulesBox() {
         checkbox.classList.add("checkbox");
         if (i === 2 || i === 3) {
             checkbox.classList.add("checked");
-            rules.alive[i] = 1;
+            rules.alive[i] = true;
         }
         checkbox.setAttribute("data-id", `${i}`);
         checkbox.addEventListener("click", (event) => {
             let { id } = event.target.dataset;
-            let isChecked = rules.alive[id] === 1;
+            let isChecked = rules.alive[id];
             if (isChecked) {
                 checkbox.classList.remove("checked");
-                rules.alive[id] = 0;
+                rules.alive[id] = false;
             } else {
                 checkbox.classList.add("checked");
-                rules.alive[id] = 1;
+                rules.alive[id] = true;
             }
+            console.log(rules)
         });
         aliveRow.appendChild(checkbox);
     }
@@ -92,22 +99,228 @@ function registerRulesBox() {
         checkbox.classList.add("checkbox");
         if (i === 3) {
             checkbox.classList.add("checked");
-            rules.dead[i] = 1;
+            rules.dead[i] = true;
         }
         checkbox.setAttribute("data-id", `${i}`);
         checkbox.addEventListener("click", (event) => {
             let { id } = event.target.dataset;
-            let isChecked = rules.dead[id] === 1;
+            let isChecked = rules.dead[id];
             if (isChecked) {
                 checkbox.classList.remove("checked");
-                rules.dead[id] = 0;
+                rules.dead[id] = false;
             } else {
                 checkbox.classList.add("checked");
-                rules.dead[id] = 1;
+                rules.dead[id] = true;
             }
+            console.log(rules)
         });
         deadRow.appendChild(checkbox);
     }
     rulesBox.appendChild(aliveRow);
     rulesBox.appendChild(deadRow);
+    console.log(rules);
+}
+
+function play() {
+    const runTimeout = () => {
+    iterate();
+    playInterval = window.setTimeout(runTimeout, SPEED);
+    };
+
+    runTimeout();
+};
+
+function pause() {
+    window.clearTimeout(playInterval);
+    playInterval = undefined;
+};
+
+function stop() {
+    pause();
+    resetBoard();
+    resetRules();
+    SPEED = 300;
+}
+
+function changeSpeed() {
+    pause();
+    switch(SPEED) {
+        case 300:
+            SPEED = 1000;
+            break;
+        case 1000:
+            SPEED = 3000;
+            break;
+        case 3000:
+            SPEED = 300;
+            break;
+    }
+    play();
+}
+
+function iterate() {
+    currentState = updateState(currentState);
+    drawState(currentState);
+}
+
+function updateState(oldState) {
+    const newState = Array.from({ length: SIZE_Y }, () => Array.from({ length: SIZE_X }, () => false));
+    for (let y=0; y<oldState.length; y++) {
+        for (let x=0; x<oldState[y].length; x++) {
+            const neighboursAmount = getBinaryState(getTopNeighbour(y,x), oldState) +
+                getBinaryState(getTopRightNeighbour(y,x), oldState) +
+                getBinaryState(getRightNeighbour(y,x), oldState) +
+                getBinaryState(getBottomRightNeighbour(y,x), oldState) +
+                getBinaryState(getBottomNeighbour(y,x), oldState) +
+                getBinaryState(getBottomLeftNeighbour(y,x), oldState) +
+                getBinaryState(getLeftNeighbour(y,x), oldState) +
+                getBinaryState(getTopLeftNeighbour(y,x), oldState);
+            
+            if (oldState[y][x]) {
+                newState[y][x] = rules.alive[neighboursAmount];
+            } else {
+                newState[y][x] = rules.dead[neighboursAmount];
+            }
+        }
+    }
+    return newState;
+}
+
+function drawState(state) {
+    for (let y = 0; y < state.length; y++) {
+        for (let x = 0; x < state[y].length; x++) {
+            const element = state[y][x];
+            if (element) {
+                boardState[y][x].classList.add("checked");
+            } else {
+                boardState[y][x].classList.remove("checked");
+            }
+        }
+    }
+}
+
+function getBinaryState(position, oldState) {
+    return oldState[position[0]][position[1]] ? 1 : 0; 
+}
+
+function getTopNeighbour(y,x) {
+    if (y === 0) {
+        return [SIZE_Y - 1, x];
+    }
+    return [y - 1, x];
+}
+
+function getTopRightNeighbour(y,x) {
+    let result = [y - 1, x + 1];
+    if (y === 0) {
+        result[0] = SIZE_Y - 1;
+    }
+    if (x === SIZE_X - 1) {
+        result[1] = 0;
+    }
+    return result;
+}
+
+
+function getRightNeighbour(y,x) {
+    if (x === SIZE_X - 1) {
+        return [y, 0];
+    }
+    return [y, x + 1];
+}
+
+
+function getBottomRightNeighbour(y,x) {
+    let result = [y + 1, x + 1];
+    if (y === SIZE_Y - 1) {
+        result[0] = 0;
+    }
+    if (x === SIZE_X - 1) {
+        result[1] = 0;
+    }
+    return result;
+}
+
+
+function getBottomNeighbour(y,x) {
+    if (y === SIZE_Y - 1) {
+        return [0, x];
+    }
+    return [y + 1, x];
+}
+
+
+function getBottomLeftNeighbour(y,x) {
+    let result = [y + 1, x - 1];
+    if (y === SIZE_Y - 1) {
+        result[0] = 0;
+    }
+    if (x === 0) {
+        result[1] = SIZE_X - 1;
+    }
+    return result;
+}
+
+
+function getLeftNeighbour(y,x) {
+    if (x === 0) {
+        return [y, SIZE_X - 1];
+    }
+    return [y, x - 1];
+}
+
+
+function getTopLeftNeighbour(y,x) {
+    let result = [y - 1, x - 1];
+    if (y === 0) {
+        result[0] = SIZE_Y - 1;
+    }
+    if (x === 0) {
+        result[1] = SIZE_X - 1;
+    }
+    return result;
+}
+
+function resetBoard() {
+    for (let y=0; y<boardState.length; y++) {
+        for (let x=0; x<boardState[y].length; x++) {
+            boardState[y][x].classList.remove("checked");
+            currentState[y][x] = false;
+        }
+    }
+   
+}
+
+function resetRules() {
+    for (let i=0; i<10; i++) {
+        if (i === 2) {
+            rules.alive[i] = true;
+        } else if (i === 3) {
+            rules.alive[i] = true;
+            rules.dead[i] = true;
+        } else {
+            rules.alive[i] = false;
+            rules.dead[i] = false;
+        }
+    }
+    aliveCheckboxes = document.querySelectorAll("#alive div");
+    aliveCheckboxes.forEach(element => {
+        let { id } = element.dataset;
+        if (rules.alive[id] && !element.classList.contains("checked")) {
+            element.classList.add("checked");
+        } else if (!rules.alive[id]) {
+            element.classList.remove("checked");
+        }
+    })
+    deadCheckboxes = document.querySelectorAll("#dead div");
+    deadCheckboxes.forEach(element => {
+        let { id } = element.dataset;
+        if (rules.dead[id] && !element.classList.contains("checked")) {
+            element.classList.add("checked");
+        } else if (!rules.dead[id]) {
+            element.classList.remove("checked");
+        }
+    })
+
+    console.log(rules)
 }
