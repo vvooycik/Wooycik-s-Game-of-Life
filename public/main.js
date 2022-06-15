@@ -148,14 +148,26 @@ function changeSpeed() {
     const speedometer = document.getElementById("speedometer");
     switch(SPEED) {
         case 250:
-            SPEED = 1000;
-            speedometer.textContent = "Speed: 0.25x"
+            SPEED = 125;
+            speedometer.textContent = "Speed: 2x"
             break;
-        case 1000:
+        case 125:
+            SPEED = 62;
+            speedometer.textContent = "Speed: 4x"
+            break;
+        case 62:
+            SPEED = 31;
+            speedometer.textContent = "Speed: 8x"
+            break;
+        case 31:
             SPEED = 2000;
             speedometer.textContent = "Speed: 0.125x"
             break;
         case 2000:
+            SPEED = 1000;
+            speedometer.textContent = "Speed: 0.25x"
+            break;
+        case 1000:
             SPEED = 250;
             speedometer.textContent = "Speed: 1x"
             break;

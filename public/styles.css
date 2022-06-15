@@ -3,7 +3,7 @@
 html, body {
     min-height: 100vh;
     font-family: 'Work Sans', sans-serif;
-    background-color: rgb(206, 161, 0);
+    background-color: rgb(225, 165, 0);
 }
 
 .title {
@@ -21,7 +21,7 @@ html, body {
     margin: 1rem;
     width: 80%;
     padding:1rem;
-    background-color: rgb(202, 202, 202);
+    background-color: rgb(240, 231, 203);
     border-radius: 0.5rem;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.19);
 }
@@ -37,7 +37,7 @@ html, body {
 .settingsPane {
     margin:1rem;
     width: 20%;
-    background-color: rgb(202, 202, 202);
+    background-color: rgb(240, 231, 203);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -83,7 +83,7 @@ p {
 }
 
 .rulesBox .checked {
-    background-color: rgb(206, 161, 0);
+    background-color: rgb(225,165,0);
 }
 
 .controlls {
@@ -95,7 +95,7 @@ p {
 }
 
 .controlls button {
-    background-color: rgb(202, 202, 202);
+    background-color: rgb(240, 231, 203);
     border: none;
     border-radius: 0.5rem;
     box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2), 0 2px 5px 0 rgba(0, 0, 0, 0.19);
