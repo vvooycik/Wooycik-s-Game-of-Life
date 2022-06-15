@@ -300,6 +300,7 @@ function resetRules() {
     for (let i=0; i<10; i++) {
         if (i === 2) {
             rules.alive[i] = true;
+            rules.dead[i] = false;
         } else if (i === 3) {
             rules.alive[i] = true;
             rules.dead[i] = true;

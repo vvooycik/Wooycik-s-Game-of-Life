@@ -50,6 +50,7 @@ html, body {
     width: 14px;
     height: 14px;
     border: solid 2px rgb(178, 178, 178);
+    cursor: pointer;
 }
 
 .checked {
@@ -101,6 +102,7 @@ p {
     display:flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
 }
 
 .controlls span {
