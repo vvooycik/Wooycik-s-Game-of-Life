@@ -6,8 +6,9 @@ const rules = {
     dead: Array.from({length: 10}, () => false)
 };
 let currentState = Array.from({ length: SIZE_Y }, () => Array.from({ length: SIZE_X }, () => false));
-let SPEED = 300;
-
+let SPEED = 250;
+document.getElementById("speedometer").textContent = "Speed: 1x";
+let isIterating = false;
 
 registerBoard();
 registerRulesBox();
@@ -30,13 +31,13 @@ function registerBoard() {
 
             element.addEventListener("click", () => {
                 let isChecked = element.classList.contains('checked');
-                boardState[y][x] = element;
-                currentState[y][x] = !isChecked;
                 if (isChecked) {
                     element.classList.remove("checked");
                 } else {
                     element.classList.add("checked");
                 }
+                currentState[y][x] = !isChecked;
+                boardState[y][x] = element;
             });
 
             element.addEventListener("pointerdown", (e) => {
@@ -50,14 +51,14 @@ function registerBoard() {
             element.addEventListener("mouseleave", (e) => {
                 if (isStaringDrawing) {
                     element.classList.add('checked');
-                    isStaringDrawing = false;
                     currentState[y][x] = isStaringDrawing;
+                    isStaringDrawing = false;
                 }
             });
             element.addEventListener("mouseenter", (e) => {
                 if (isDrawing) {
-                    element.classList.add('checked');
                     currentState[y][x] = isDrawing;
+                    element.classList.add('checked');
                 }
             });
         }
@@ -87,7 +88,6 @@ function registerRulesBox() {
                 checkbox.classList.add("checked");
                 rules.alive[id] = true;
             }
-            console.log(rules)
         });
         aliveRow.appendChild(checkbox);
     }
@@ -112,27 +112,28 @@ function registerRulesBox() {
                 checkbox.classList.add("checked");
                 rules.dead[id] = true;
             }
-            console.log(rules)
         });
         deadRow.appendChild(checkbox);
     }
     rulesBox.appendChild(aliveRow);
     rulesBox.appendChild(deadRow);
-    console.log(rules);
+    ;
 }
 
 function play() {
     const runTimeout = () => {
-    iterate();
-    playInterval = window.setTimeout(runTimeout, SPEED);
+        isIterating = true;
+        iterate();
+        playInterval = window.setTimeout(runTimeout, SPEED);
     };
-
     runTimeout();
 };
 
 function pause() {
-    window.clearTimeout(playInterval);
-    playInterval = undefined;
+    if (isIterating) {
+        window.clearTimeout(playInterval);
+        playInterval = undefined;
+    }
 };
 
 function stop() {
@@ -144,18 +145,23 @@ function stop() {
 
 function changeSpeed() {
     pause();
+    const speedometer = document.getElementById("speedometer");
     switch(SPEED) {
-        case 300:
+        case 250:
             SPEED = 1000;
+            speedometer.textContent = "Speed: 0.25x"
             break;
         case 1000:
-            SPEED = 3000;
+            SPEED = 2000;
+            speedometer.textContent = "Speed: 0.125x"
             break;
-        case 3000:
-            SPEED = 300;
+        case 2000:
+            SPEED = 250;
+            speedometer.textContent = "Speed: 1x"
             break;
     }
     play();
+    
 }
 
 function iterate() {
@@ -175,7 +181,6 @@ function updateState(oldState) {
                 getBinaryState(getBottomLeftNeighbour(y,x), oldState) +
                 getBinaryState(getLeftNeighbour(y,x), oldState) +
                 getBinaryState(getTopLeftNeighbour(y,x), oldState);
-            
             if (oldState[y][x]) {
                 newState[y][x] = rules.alive[neighboursAmount];
             } else {
@@ -321,6 +326,6 @@ function resetRules() {
             element.classList.remove("checked");
         }
     })
-
-    console.log(rules)
+    SPEED = 250;
+    document.getElementById("speedometer").textContent = "Speed: 1x";
 }
